@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+
 story = ""
 depth = 3
 base_url = "https://en.wikipedia.org"
@@ -12,9 +13,14 @@ for d in range(depth):
     page = BeautifulSoup(result.text, "html.parser")
     content = page.find(class_="mw-parser-output")
     search_para_parent = content.find("b", text=topic).parent
-    search = search_para_parent.find_all("a")[-1]['href']
+    all_links = search_para_parent.find_all("a")#[-1]['href']
+    for l in all_links[::-1]:
+        if l['href'][0] == '/' and '#' not in l['href']:
+            search = l['href']
+            break
+
     for line in search_para_parent.strings:
-        story += line
+         story += line
     story += "\n"
     print(story)
     story = ""
